@@ -106,11 +106,11 @@ class User < ApplicationRecord
   end
 
   def steam_32
-    SteamId.to_32(steam_id)
+    SteamId.to_32(steam_id.to_s)
   end
 
   def steam_id3
-    SteamId.to_id3(steam_id)
+    SteamId.to_id3(steam_id.to_s)
   end
 
   def admin?

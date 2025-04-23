@@ -91,6 +91,26 @@ class UsersController < ApplicationController
     end
   end
 
+  def link_discord
+    logger.info '\n\n\nWE GOT THERE\n\n\n'
+    d_id = params[:discord_id]
+    @user = User.find_by(id: params[:id])
+    if !User.find_by(discord_id: d_id)
+      @user.update(discord_id: d_id)
+      flash[:notice] = 'Discord account linked!'
+    else
+      flash[:error] = 'This Discord account is already linked to another Ozfortress account.'
+    end
+    redirect_to edit_user_path(@user)
+  end
+
+  def unlink_discord
+    @user = User.find(params[:id])
+    @user.unlink_discord
+    flash[:notice] = 'Discord account unlinked!'
+    redirect_to edit_user_path(@user)
+  end
+
   def handle_name_change
     @user = User.find(params[:user_id])
     @name_change = @user.names.pending.find(params[:id])

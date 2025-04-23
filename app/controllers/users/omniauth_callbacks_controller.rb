@@ -16,6 +16,14 @@ module Users
       end
     end
 
+    def discord
+      auth = request.env['omniauth.auth']
+      params = request.env['omniauth.params']
+      user_id = params['user_id']
+      discord_id = auth.extra.raw_info['id']
+      redirect_to link_discord_user_path(id: user_id, discord_id: discord_id), method: :patch
+    end
+
     def failure
       redirect_back(fallback_location: root_path)
     end

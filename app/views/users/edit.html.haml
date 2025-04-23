@@ -16,6 +16,21 @@
       = f.primary 'Request Name Change'
 
 .card.mb-3
+  .card-header Connections
+  .card-body
+    = user_p.discord_icon_link
+    %b Discord
+    .d-flex.align-items-center
+      - if @user.discord_id
+        .flex-fill
+          Account Linked
+        = button_to 'Unlink Account', unlink_discord_user_path(@user), method: :patch, class: 'btn btn-danger'
+      - else
+        .flex-fill
+          Account Not Linked
+        = link_to 'Link Discord', user_discord_omniauth_authorize_path(user_id: @user.id), method: :post, class: 'btn btn-primary'
+
+.card.mb-3
   .card-header General
   .card-body
     = bootstrap_form_for @user, method: :patch do |f|

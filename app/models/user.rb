@@ -34,7 +34,7 @@ class User < ApplicationRecord
 
   has_many :logs, class_name: 'User::Log', dependent: :destroy
 
-  devise :rememberable, :omniauthable, omniauth_providers: [:steam]
+  devise :rememberable, :omniauthable, omniauth_providers: [:steam, :discord]
 
   validates :name, presence: true, uniqueness: true, length: { in: 1..64 }
   validates :steam_id, presence: true, uniqueness: true,
@@ -127,6 +127,10 @@ class User < ApplicationRecord
 
   def confirm
     update(confirmed_at: Time.current)
+  end
+
+  def unlink_discord
+    update(discord_id: nil)
   end
 
   def generate_confirmation_token

@@ -49,6 +49,7 @@ describe 'users/show' do
 
     expect(rendered).to include(user.name)
     expect(rendered).to include(user.badge_name)
+    expect(rendered).to include(user.discord_id) unless user.discord_id.nil?
     # TODO: Add more checks for user data
   end
 
@@ -59,6 +60,7 @@ describe 'users/show' do
 
     expect(rendered).to include(user.name)
     expect(rendered).to include(user.badge_name)
+    expect(rendered).to include(user.discord_id) unless user.discord_id.nil?
     # TODO: Add more checks for user data
   end
 

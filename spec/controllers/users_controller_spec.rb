@@ -360,4 +360,40 @@ describe UsersController do
       expect(session['devise']).to be_nil
     end
   end
+
+  describe 'GET #link_discord' do
+    let(:user) { create(:user) }
+    let(:second_user) { create(:user) }
+    it 'allows users to link a Discord account' do
+      discord_id = 123
+      get :link_discord, params: { id: user.id, discord_id: discord_id }
+      user.reload
+      expect(user.discord_id).to eq(discord_id)
+    end
+
+    it 'enforces Discord account uniqueness' do
+      discord_id = 123
+      get :link_discord, params: { id: second_user.id, discord_id: discord_id }
+      second_user.reload
+      expect(second_user.discord_id).to eq(discord_id)
+
+      prev_id = user.discord_id
+      get :link_discord, params: { id: user.id, discord_id: discord_id }
+      user.reload
+      expect(user.discord_id).to eq(prev_id)
+    end
+  end
+
+  describe 'PATCH #unlink_discord' do
+    let(:user) { create(:user) }
+    it 'allows users to unlink a Discord account' do
+      discord_id = 123
+      get :link_discord, params: { id: user.id, discord_id: discord_id }
+      user.reload
+      expect(user.discord_id).to eq(discord_id)
+      patch :unlink_discord, params: { id: user.id }
+      user.reload
+      expect(user.discord_id).to eq(nil)
+    end
+  end
 end

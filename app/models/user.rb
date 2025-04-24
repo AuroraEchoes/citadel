@@ -129,10 +129,6 @@ class User < ApplicationRecord
     update(confirmed_at: Time.current)
   end
 
-  def unlink_discord
-    update(discord_id: nil)
-  end
-
   def generate_confirmation_token
     self.confirmed_at = nil
     self.confirmation_sent_at = Time.current

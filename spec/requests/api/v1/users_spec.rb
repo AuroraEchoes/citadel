@@ -77,9 +77,14 @@ describe API::V1::UsersController, type: :request do
   end
 
   describe 'GET #discord_id' do
+    after do
+      Rails.configuration.features[:discord_integration] = true
+    end
+
     let(:route) { '/api/v1/users/discord_id' }
 
     it 'succeeds for existing user' do
+      Rails.configuration.features[:discord_integration] = true
       user.update(discord_id: 123)
       get "#{route}/#{user.discord_id}", headers: { 'X-API-Key' => api_key.key }
 
@@ -93,11 +98,12 @@ describe API::V1::UsersController, type: :request do
     end
 
     it 'succeeds for non-existent user' do
+      Rails.configuration.features[:discord_integration] = true
       get "#{route}/0", headers: { 'X-API-Key' => api_key.key }
 
       json = response.parsed_body
       expect(json['status']).to eq(404)
-      expect(json['message']).to eq('Feature: Discord Integration is not enabled')
+      expect(json['message']).to eq('Record not found')
       expect(response).to be_not_found
     end
 
@@ -107,9 +113,8 @@ describe API::V1::UsersController, type: :request do
 
       json = response.parsed_body
       expect(json['status']).to eq(403)
-      expect(json['message']).to eq('Record not found')
+      expect(json['message']).to eq('Feature: Discord Integration is not enabled')
       expect(response).to be_forbidden
-      Rails.configuration.features[:discord_integration] = true
     end
   end
 end

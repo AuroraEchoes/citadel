@@ -87,5 +87,3 @@ spec/carrierwave
 /config/master.key
 /config/credentials.yml.enc
 /config/credentials/*
-# REMOVE BEFORE COMITTING, THIS IS JUST FOR SAFETY
-/config/database.yml

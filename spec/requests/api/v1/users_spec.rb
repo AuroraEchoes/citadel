@@ -97,8 +97,19 @@ describe API::V1::UsersController, type: :request do
 
       json = response.parsed_body
       expect(json['status']).to eq(404)
-      expect(json['message']).to eq('Record not found')
+      expect(json['message']).to eq('Feature: Discord Integration is not enabled')
       expect(response).to be_not_found
+    end
+
+    it 'returns Forbidden if Discord integration is not enabled' do
+      Rails.configuration.features[:discord_integration] = false
+      get "#{route}/0", headers: { 'X-API-Key' => api_key.key }
+
+      json = response.parsed_body
+      expect(json['status']).to eq(403)
+      expect(json['message']).to eq('Record not found')
+      expect(response).to be_forbidden
+      Rails.configuration.features[:discord_integration] = true
     end
   end
 end

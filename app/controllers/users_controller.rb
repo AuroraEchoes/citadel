@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   include UsersPermissions
+  include Features
 
   before_action only: [:show, :edit, :update, :request_name_change] do
     @user = User.find(params[:id])
@@ -92,21 +93,29 @@ class UsersController < ApplicationController
   end
 
   def link_discord
-    d_id = params[:discord_id]
-    @user = User.find_by(id: params[:id])
-    if !User.find_by(discord_id: d_id)
-      @user.update(discord_id: d_id)
-      flash[:notice] = 'Discord account linked!'
+    if discord_integration_enabled?
+      d_id = params[:discord_id]
+      @user = User.find_by(id: params[:id])
+      if !User.find_by(discord_id: d_id)
+        @user.update(discord_id: d_id)
+        flash[:notice] = 'Discord account linked!'
+      else
+        flash[:error] = 'This Discord account is already linked to another Ozfortress account.'
+      end
     else
-      flash[:error] = 'This Discord account is already linked to another Ozfortress account.'
+      flash[:error] = 'Discord integration not enabled.'
     end
     redirect_to edit_user_path(@user)
   end
 
   def unlink_discord
-    @user = User.find(params[:id])
-    @user.update(discord_id: nil)
-    flash[:notice] = 'Discord account unlinked!'
+    if discord_integration_enabled?
+      @user = User.find(params[:id])
+      @user.update(discord_id: nil)
+      flash[:notice] = 'Discord account unlinked!'
+    else
+      flash[:error] = 'Discord integration not enabled.'
+    end
     redirect_to edit_user_path(@user)
   end
 

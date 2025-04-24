@@ -25,11 +25,12 @@
       = user_p.steam_icon_link
       %span.mx-1
         = user_p.steam_id_link
-      - if @user.discord_id?
-        %span.mx-2= '/'
-        = user_p.discord_icon_link
-        %span.mx-1
-        = user_p.discord_id_link
+      - if discord_integration_enabled?
+        - if @user.discord_id?
+          %span.mx-2= '/'
+          = user_p.discord_icon_link
+          %span.mx-1
+          = user_p.discord_id_link
       %span.mx-2= '/'
       %span= @user.steam_32
       %span.mx-2= '/'

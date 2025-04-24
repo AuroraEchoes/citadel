@@ -1,6 +1,8 @@
 module API
   module V1
     class UsersController < APIController
+      include Features
+
       def show
         @user = User.find(params[:id])
 
@@ -14,8 +16,13 @@ module API
       end
 
       def discord_id
-        @user = User.find_by!(discord_id: params[:id])
-        render json: @user, serializer: UserSerializer
+        if discord_integration_enabled?
+          @user = User.find_by!(discord_id: params[:id])
+          render json: @user, serializer: UserSerializer
+        else
+          json = { message: 'Feature: Discord Integration is not enabled' }
+          render_error :forbidden, json
+        end
       end
     end
   end

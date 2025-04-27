@@ -5,12 +5,12 @@ default: &default
 
 development:
   <<: *default
-  database: citadel_0
+  database: citadel_dev
 
 test:
   <<: *default
-  database: citadel_1
+  database: citadel_test<%= ENV['TEST_ENV_NUMBER'] %>
 
 production:
   <<: *default
-  database: citadel_2
+  database: citadel_prod

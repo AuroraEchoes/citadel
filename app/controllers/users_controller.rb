@@ -94,18 +94,18 @@ class UsersController < ApplicationController
 
   def link_discord
     if discord_integration_enabled?
-      d_id = params[:discord_id]
-      @user = User.find_by(id: params[:id])
-      if !User.find_by(discord_id: d_id)
-        @user.update(discord_id: d_id)
+      discord_id = params[:discord_id]
+      @user = User.find(params[:id])
+      if @user.update(discord_id: discord_id)
         flash[:notice] = 'Discord account linked!'
       else
         flash[:error] = 'This Discord account is already linked to another Ozfortress account.'
       end
+      redirect_to edit_user_path(@user)
     else
       flash[:error] = 'Discord integration not enabled.'
+      redirect_to root_path
     end
-    redirect_to edit_user_path(@user)
   end
 
   def unlink_discord
@@ -113,10 +113,11 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
       @user.update(discord_id: nil)
       flash[:notice] = 'Discord account unlinked!'
+      redirect_to edit_user_path(@user)
     else
       flash[:error] = 'Discord integration not enabled.'
+      redirect_to root_path
     end
-    redirect_to edit_user_path(@user)
   end
 
   def handle_name_change

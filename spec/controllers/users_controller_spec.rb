@@ -362,6 +362,10 @@ describe UsersController do
   end
 
   describe 'GET #link_discord' do
+    after do
+      Rails.configuration.features[:discord_integration] = true
+    end
+
     let(:user) { create(:user) }
     let(:second_user) { create(:user) }
     it 'allows users to link a Discord account' do
@@ -382,9 +386,21 @@ describe UsersController do
       user.reload
       expect(user.discord_id).to eq(prev_id)
     end
+
+    it 'will not allow users to link an account when Discord integration is disabled' do
+      Rails.configuration.features[:discord_integration] = false
+      discord_id = 123
+      get :link_discord, params: { id: user.id, discord_id: discord_id }
+      user.reload
+      expect(user.discord_id).to eq(nil)
+    end
   end
 
   describe 'PATCH #unlink_discord' do
+    after do
+      Rails.configuration.features[:discord_integration] = true
+    end
+
     let(:user) { create(:user) }
     it 'allows users to unlink a Discord account' do
       discord_id = 123
@@ -394,6 +410,18 @@ describe UsersController do
       patch :unlink_discord, params: { id: user.id }
       user.reload
       expect(user.discord_id).to eq(nil)
+    end
+
+    it 'will not allow users to unlink an account when Discord integration is disabled' do
+      Rails.configuration.features[:discord_integration] = true
+      discord_id = 123
+      get :link_discord, params: { id: user.id, discord_id: discord_id }
+      user.reload
+      expect(user.discord_id).to eq(discord_id)
+      Rails.configuration.features[:discord_integration] = false
+      patch :unlink_discord, params: { id: user.id }
+      user.reload
+      expect(user.discord_id).to eq(discord_id)
     end
   end
 end

@@ -39,6 +39,8 @@ class User < ApplicationRecord
   validates :name, presence: true, uniqueness: true, length: { in: 1..64 }
   validates :steam_id, presence: true, uniqueness: true,
                        numericality: { greater_than: 0 }
+  validates :discord_id, allow_nil: true, uniqueness: true, numericality: { greater_than: 0 }
+
   validates :description, presence: true, allow_blank: true, length: { in: 0..1_000 }
   caches_markdown_render_for :description
   validates :email, allow_blank: true, format: { with: /@/ } # How you actually validate emails

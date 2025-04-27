@@ -87,3 +87,8 @@ spec/carrierwave
 /config/master.key
 /config/credentials.yml.enc
 /config/credentials/*
+
+# Non-sample configuration files
+database.yml
+features.yml
+news.yml

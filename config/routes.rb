@@ -110,7 +110,6 @@ Rails.application.routes.draw do
   resources :users, except: [:destroy] do
     post 'name',  on: :member, to: 'users#request_name_change'
     member do
-      get 'link_discord'
       patch 'unlink_discord'
     end
 

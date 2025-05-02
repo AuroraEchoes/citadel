@@ -41,7 +41,7 @@ class UserPresenter < BasePresenter
   end
 
   def discord_profile_url
-    "http://discord.com/users/#{user.discord_id}"
+    "https://discord.com/users/#{user.discord_id}"
   end
 
   def discord_id_link

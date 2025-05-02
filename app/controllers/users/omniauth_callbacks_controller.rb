@@ -1,5 +1,7 @@
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+    include Features
+
     # Don't need to protect against forgery for omniauth logins
     skip_before_action :verify_authenticity_token
 
@@ -22,7 +24,22 @@ module Users
       user_id = params['user_id']
       discord_id = auth.extra.raw_info['id']
       discord_revoke_token(auth.credentials.token)
-      redirect_to link_discord_user_path(id: user_id, discord_id: discord_id), method: :patch
+      link_discord(user_id, discord_id)
+    end
+
+    def link_discord(user_id, discord_id)
+      if discord_integration_enabled?
+        @user = User.find(user_id)
+        if @user.update(discord_id: discord_id)
+          flash[:notice] = 'Discord account linked!'
+        else
+          flash[:error] = 'This Discord account is already linked to another Ozfortress account.'
+        end
+        redirect_to edit_user_path(@user)
+      else
+        flash[:error] = 'Discord integration not enabled.'
+        redirect_to root_path
+      end
     end
 
     def discord_revoke_token(token)

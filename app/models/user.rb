@@ -5,6 +5,7 @@ require 'steam_id'
 class User < ApplicationRecord
   include Auth::Model
   include MarkdownRenderCaching
+  include Features
 
   EMAIL_CONFIRMATION_TIMEOUT = 1.hour
 
@@ -34,7 +35,7 @@ class User < ApplicationRecord
 
   has_many :logs, class_name: 'User::Log', dependent: :destroy
 
-  devise :rememberable, :omniauthable, omniauth_providers: [:steam, :discord]
+  devise :rememberable, :omniauthable, omniauth_providers: [:steam, (:discord if -> { discord_integration_enabled? })]
 
   validates :name, presence: true, uniqueness: true, length: { in: 1..64 }
   validates :steam_id, presence: true, uniqueness: true,
@@ -108,11 +109,11 @@ class User < ApplicationRecord
   end
 
   def steam_32
-    SteamId.to_32(steam_id.to_s)
+    SteamId.from_64_to_32(steam_id)
   end
 
   def steam_id3
-    SteamId.to_id3(steam_id.to_s)
+    SteamId.from_64_to_id3(steam_id)
   end
 
   def admin?

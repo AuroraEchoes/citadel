@@ -92,22 +92,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def link_discord
-    if discord_integration_enabled?
-      discord_id = params[:discord_id]
-      @user = User.find(params[:id])
-      if @user.update(discord_id: discord_id)
-        flash[:notice] = 'Discord account linked!'
-      else
-        flash[:error] = 'This Discord account is already linked to another Ozfortress account.'
-      end
-      redirect_to edit_user_path(@user)
-    else
-      flash[:error] = 'Discord integration not enabled.'
-      redirect_to root_path
-    end
-  end
-
   def unlink_discord
     if discord_integration_enabled?
       @user = User.find(params[:id])

@@ -780,6 +780,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_23_113545) do
     t.integer "public_forums_posts_count", default: 0, null: false
     t.bigint "discord_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["discord_id"], name: "index_users_on_discord_id"
     t.index ["name"], name: "index_users_on_name", unique: true
     t.index ["query_name_cache"], name: "index_users_on_query_name_cache", opclass: :gist_trgm_ops, using: :gist
     t.index ["steam_id"], name: "index_users_on_steam_id", unique: true

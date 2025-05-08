@@ -35,7 +35,10 @@ class User < ApplicationRecord
 
   has_many :logs, class_name: 'User::Log', dependent: :destroy
 
-  devise :rememberable, :omniauthable, omniauth_providers: [:steam, (:discord if -> { discord_integration_enabled? })]
+  devise :rememberable, :omniauthable, omniauth_providers: [
+    :steam,
+    *(Rails.configuration.features[:discord_integration] ? :discord : []),
+  ]
 
   validates :name, presence: true, uniqueness: true, length: { in: 1..64 }
   validates :steam_id, presence: true, uniqueness: true,

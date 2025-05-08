@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'users/show' do
   include Features
-  let(:user) { build_stubbed(:user, badge_name: 'Admin') }
+  let(:user) { build_stubbed(:user_with_discord, badge_name: 'Admin') }
   let(:teams) { build_stubbed_list(:team, 3) }
   let(:aka) { build_stubbed_list(:user_name_change, 5) }
   let(:titles) { build_stubbed_list(:user_title, 5) }
@@ -50,7 +50,9 @@ describe 'users/show' do
 
     expect(rendered).to include(user.name)
     expect(rendered).to include(user.badge_name)
-    expect(rendered).to include(user.discord_id) unless user.discord_id.nil? || !discord_integration_enabled?
+    unless user.discord_id.nil? || !discord_integration_enabled?
+      expect(rendered).to include(present(user).discord_id_link)
+    end
     # TODO: Add more checks for user data
   end
 
@@ -61,7 +63,9 @@ describe 'users/show' do
 
     expect(rendered).to include(user.name)
     expect(rendered).to include(user.badge_name)
-    expect(rendered).to include(user.discord_id) unless user.discord_id.nil? || !discord_integration_enabled?
+    unless user.discord_id.nil? || !discord_integration_enabled?
+      expect(rendered).to include(present(user).discord_id_link)
+    end
     # TODO: Add more checks for user data
   end
 

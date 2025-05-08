@@ -51,7 +51,7 @@ class UserPresenter < BasePresenter
   end
 
   def discord_icon_link(options = { size: 16 })
-    link_to(discord_id_link, target: '_blank', rel: 'noopener') do
+    link_to(discord_profile_url, target: '_blank', rel: 'noopener') do
       inline_svg_tag('discord-logo.svg', size: "#{options[:size]}px")
     end
   end

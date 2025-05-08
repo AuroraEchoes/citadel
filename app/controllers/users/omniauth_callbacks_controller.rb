@@ -20,26 +20,24 @@ module Users
 
     def discord
       auth = request.env['omniauth.auth']
-      params = request.env['omniauth.params']
-      user_id = params['user_id']
       discord_id = auth.extra.raw_info['id']
       discord_revoke_token(auth.credentials.token)
-      link_discord(user_id, discord_id)
+      link_discord(discord_id)
     end
 
-    def link_discord(user_id, discord_id)
-      if discord_integration_enabled?
-        @user = User.find(user_id)
-        if @user.update(discord_id: discord_id)
-          flash[:notice] = 'Discord account linked!'
-        else
-          flash[:error] = 'This Discord account is already linked to another Ozfortress account.'
-        end
-        redirect_to edit_user_path(@user)
+    def failure
+      redirect_back(fallback_location: root_path)
+    end
+
+    private
+
+    def link_discord(discord_id)
+      if current_user.update(discord_id: discord_id)
+        flash[:notice] = 'Discord account linked!'
       else
-        flash[:error] = 'Discord integration not enabled.'
-        redirect_to root_path
+        flash[:error] = 'This Discord account is already linked to another account.'
       end
+      redirect_to edit_user_path(current_user)
     end
 
     def discord_revoke_token(token)
@@ -47,10 +45,6 @@ module Users
       http = Net::HTTP.new(uri.host, uri.port)
       post = Net::HTTP::Post.new(uri.to_s)
       http.request(post)
-    end
-
-    def failure
-      redirect_back(fallback_location: root_path)
     end
   end
 end

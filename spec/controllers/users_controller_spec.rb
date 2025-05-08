@@ -362,31 +362,29 @@ describe UsersController do
   end
 
   describe 'PATCH #unlink_discord' do
-    after do
+    let(:user) { create(:user_with_discord) }
+    before do
       Rails.configuration.features[:discord_integration] = true
+      sign_in user
     end
 
-    let(:user) { create(:user) }
+    after do
+      Rails.configuration.features[:discord_integration] = true
+      Rails.application.reload_routes!
+    end
+
     it 'allows users to unlink a Discord account' do
-      discord_id = 123
-      user.update(discord_id: discord_id)
-      user.reload
-      expect(user.discord_id).to eq(discord_id)
+      expect(user.discord_id).to_not be_nil
       patch :unlink_discord, params: { id: user.id }
       user.reload
-      expect(user.discord_id).to eq(nil)
+      expect(user.discord_id).to be_nil
     end
 
     it 'will not allow users to unlink an account when Discord integration is disabled' do
-      Rails.configuration.features[:discord_integration] = true
-      discord_id = 123
-      user.update(discord_id: discord_id)
-      user.reload
-      expect(user.discord_id).to eq(discord_id)
+      expect(patch: "/users/#{user.id}/unlink_discord").to be_routable
       Rails.configuration.features[:discord_integration] = false
-      patch :unlink_discord, params: { id: user.id }
-      user.reload
-      expect(user.discord_id).to eq(discord_id)
+      Rails.application.reload_routes!
+      expect(patch: "/users/#{user.id}/unlink_discord").to_not be_routable
     end
   end
 end

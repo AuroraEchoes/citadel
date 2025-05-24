@@ -21,6 +21,6 @@ module Auth
       subject_cls.name.underscore.sub('/', '_').to_sym
     end
 
-    :grant_name
+    module_function :grant_name, :ban_name, :get_subject_name
   end
 end

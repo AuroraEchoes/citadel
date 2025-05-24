@@ -1,6 +1,7 @@
+require 'features'
+
 class UsersController < ApplicationController
   include UsersPermissions
-  include Features
 
   before_action only: [:show, :edit, :update, :request_name_change, :unlink_discord] do
     @user = User.find(params[:id])
@@ -93,7 +94,7 @@ class UsersController < ApplicationController
   end
 
   def unlink_discord
-    @user.update(discord_id: nil)
+    @user.update!(discord_id: nil)
     flash[:notice] = 'Discord account unlinked!'
     redirect_to edit_user_path(@user)
   end

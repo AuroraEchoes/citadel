@@ -30,7 +30,7 @@
       %span.mx-2= '/'
       %span= @user.steam_id
     .row.align-items-center.external-link
-      - if discord_integration_enabled? && @user.discord_id?
+      - if Features.discord_integration_enabled? && @user.discord_id?
         = user_p.discord_icon_link
         %span.ml-1
         = user_p.discord_id_link

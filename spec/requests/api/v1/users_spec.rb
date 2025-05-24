@@ -77,44 +77,46 @@ describe API::V1::UsersController, type: :request do
   end
 
   describe 'GET #discord_id' do
-    after do
-      Rails.configuration.features[:discord_integration] = true
-    end
-
+    let(:user) { create(:user_with_discord) }
     let(:route) { '/api/v1/users/discord_id' }
 
-    it 'succeeds for existing user' do
-      Rails.configuration.features[:discord_integration] = true
-      user.update(discord_id: 123)
-      get "#{route}/#{user.discord_id}", headers: { 'X-API-Key' => api_key.key }
+    context 'with Discord integration enabled' do
+      before do
+        allow(Features).to receive(:discord_integration_enabled?).and_return(true)
+        Rails.application.reload_routes!
+      end
 
-      json = response.parsed_body
-      user_h = json['user']
-      expect(user_h).to_not be_nil
-      expect(user_h['name']).to eq(user.name)
-      expect(user_h['teams']).to be_empty
-      expect(user_h['rosters']).to be_empty
-      expect(response).to be_successful
+      it 'succeeds for existing user' do
+        get "#{route}/#{user.discord_id}", headers: { 'X-API-Key' => api_key.key }
+
+        json = response.parsed_body
+        user_h = json['user']
+        expect(user_h).to_not be_nil
+        expect(user_h['name']).to eq(user.name)
+        expect(user_h['teams']).to be_empty
+        expect(user_h['rosters']).to be_empty
+        expect(user_h['discord_id']).to be(user.discord_id)
+        expect(response).to be_successful
+      end
+
+      it 'fails for non-existent user' do
+        get "#{route}/0", headers: { 'X-API-Key' => api_key.key }
+
+        json = response.parsed_body
+        expect(json['status']).to eq(404)
+        expect(json['message']).to eq('Record not found')
+        expect(response).to be_not_found
+      end
     end
+    context 'with Discord integration disabled' do
+      before do
+        allow(Features).to receive(:discord_integration_enabled?).and_return(false)
+        Rails.application.reload_routes!
+      end
 
-    it 'succeeds for non-existent user' do
-      Rails.configuration.features[:discord_integration] = true
-      get "#{route}/0", headers: { 'X-API-Key' => api_key.key }
-
-      json = response.parsed_body
-      expect(json['status']).to eq(404)
-      expect(json['message']).to eq('Record not found')
-      expect(response).to be_not_found
-    end
-
-    it 'returns Forbidden if Discord integration is not enabled' do
-      Rails.configuration.features[:discord_integration] = false
-      get "#{route}/0", headers: { 'X-API-Key' => api_key.key }
-
-      json = response.parsed_body
-      expect(json['status']).to eq(403)
-      expect(json['message']).to eq('Feature: Discord Integration is not enabled')
-      expect(response).to be_forbidden
+      it 'cannot route by Discord ID' do
+        expect { get "#{route}/#{user.discord_id}" }.to raise_error(ActionController::RoutingError)
+      end
     end
   end
 end

@@ -1,7 +1,5 @@
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-    include Features
-
     # Don't need to protect against forgery for omniauth logins
     skip_before_action :verify_authenticity_token
 

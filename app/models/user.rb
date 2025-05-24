@@ -1,11 +1,11 @@
 require 'search'
 require 'auth'
 require 'steam_id'
+require 'features'
 
 class User < ApplicationRecord
   include Auth::Model
   include MarkdownRenderCaching
-  include Features
 
   EMAIL_CONFIRMATION_TIMEOUT = 1.hour
 
@@ -37,7 +37,7 @@ class User < ApplicationRecord
 
   devise :rememberable, :omniauthable, omniauth_providers: [
     :steam,
-    *(Rails.configuration.features[:discord_integration] ? :discord : []),
+    *(Features.discord_integration_enabled? ? :discord : []),
   ]
 
   validates :name, presence: true, uniqueness: true, length: { in: 1..64 }

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'users/show' do
-  include Features
   let(:user) { build_stubbed(:user_with_discord, badge_name: 'Admin') }
   let(:teams) { build_stubbed_list(:team, 3) }
   let(:aka) { build_stubbed_list(:user_name_change, 5) }
@@ -50,9 +49,6 @@ describe 'users/show' do
 
     expect(rendered).to include(user.name)
     expect(rendered).to include(user.badge_name)
-    unless user.discord_id.nil? || !discord_integration_enabled?
-      expect(rendered).to include(present(user).discord_id_link)
-    end
     # TODO: Add more checks for user data
   end
 
@@ -63,9 +59,6 @@ describe 'users/show' do
 
     expect(rendered).to include(user.name)
     expect(rendered).to include(user.badge_name)
-    unless user.discord_id.nil? || !discord_integration_enabled?
-      expect(rendered).to include(present(user).discord_id_link)
-    end
     # TODO: Add more checks for user data
   end
 
@@ -73,5 +66,28 @@ describe 'users/show' do
     allow(view).to receive(:user_can_edit_users?).and_return(true)
 
     render
+  end
+
+  context 'with Discord integration enabled' do
+    before do
+      allow(Features).to receive(:discord_integration_enabled?).and_return(true)
+      Rails.application.reload_routes!
+    end
+
+    it 'renders the Discord ID link' do
+      render
+      expect(rendered).to include(present(user).discord_id_link)
+    end
+  end
+
+  context 'with Discord integration disabled' do
+    before do
+      allow(Features).to receive(:discord_integration_enabled?).and_return(false)
+      Rails.application.reload_routes!
+    end
+    it 'does not render the Discord ID link' do
+      render
+      expect(rendered).to_not include(present(user).discord_id_link)
+    end
   end
 end

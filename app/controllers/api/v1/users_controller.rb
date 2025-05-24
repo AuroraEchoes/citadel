@@ -16,13 +16,8 @@ module API
       end
 
       def discord_id
-        if discord_integration_enabled?
-          @user = User.find_by!(discord_id: params[:id])
-          render json: @user, serializer: UserSerializer
-        else
-          json = { message: 'Feature: Discord Integration is not enabled' }
-          render_error :forbidden, json
-        end
+        @user = User.find_by!(discord_id: params[:id])
+        render json: @user, serializer: UserSerializer
       end
     end
   end

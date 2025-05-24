@@ -31,8 +31,8 @@ gem 'cocoon'
 gem 'jquery-rails'
 # Steam Login
 gem 'omniauth', '~> 1'
-gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-discord'
+gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-steam'
 # Authentication
 gem 'devise'

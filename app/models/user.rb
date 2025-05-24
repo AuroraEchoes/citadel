@@ -15,13 +15,11 @@ class User < ApplicationRecord
   has_many :forums_subscriptions, class_name: 'Forums::Subscription', dependent: :destroy
 
   has_many :team_players, class_name: 'Team::Player', dependent: :destroy
-  private :team_players, :team_players=
   has_many :teams, through: :team_players
   has_many :team_invites, class_name: 'Team::Invite', dependent: :destroy
   has_many :team_transfers, -> { order(created_at: :desc) }, class_name: 'Team::Transfer', dependent: :destroy
 
   has_many :roster_players, class_name: 'League::Roster::Player', dependent: :restrict_with_exception
-  private :roster_players, :roster_players=
   has_many :rosters, through: :roster_players, class_name: 'League::Roster'
   has_many :roster_transfers,         class_name: 'League::Roster::Transfer', dependent: :restrict_with_exception
   has_many :roster_transfer_requests, class_name: 'League::Roster::TransferRequest', dependent: :restrict_with_exception

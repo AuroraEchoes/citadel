@@ -23,8 +23,6 @@ module Paths
           ActionView::RecordIdentifier.dom_id(instance, prefix)
         end
 
-        private :respond_to_missing?, :method_missing
-
         def respond_to_missing?(method, _include_private = false)
           instance.respond_to?(method)
         end
@@ -36,6 +34,8 @@ module Paths
             super
           end
         end
+
+        :respond_to_missing?
       end
 
       @paths_class.class_eval(&block)

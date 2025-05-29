@@ -30,7 +30,7 @@ module Users
     private
 
     def link_discord(discord_id)
-      if current_user.update(discord_id: discord_id)
+      if current_user.update(discord_id:)
         flash[:notice] = 'Discord account linked!'
       else
         flash[:error] = 'This Discord account is already linked to another account.'

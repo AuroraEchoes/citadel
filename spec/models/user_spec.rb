@@ -188,7 +188,6 @@ describe User do
 
       it { should allow_value('FOOBAR123').for(:name) }
       it { should_not allow_value('!@#').for(:name) }
-
     end
 
     context 'with name filtering disabled' do
@@ -198,7 +197,6 @@ describe User do
 
       it { should allow_value('FOOBAR123').for(:name) }
       it { should allow_value('!@#').for(:name) }
-
     end
   end
 end

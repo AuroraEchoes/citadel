@@ -219,7 +219,14 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
+    faraday (2.13.1)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
     ffi (1.17.2)
+    ffi (1.17.2-x86_64-linux-gnu)
     font-awesome-rails (4.7.0.9)
       railties (>= 3.2, < 9.0)
     globalid (1.2.1)
@@ -256,6 +263,8 @@ GEM
       thor (>= 0.14, < 2.0)
     json (2.11.3)
     jsonapi-renderer (0.2.2)
+    jwt (2.10.1)
+      base64
     language_server-protocol (3.17.0.4)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -278,10 +287,13 @@ GEM
       benchmark
       logger
     mini_mime (1.1.5)
-    mini_portile2 (2.8.8)
     minitest (5.25.5)
     multi_json (1.15.0)
+    multi_xml (0.7.2)
+      bigdecimal (~> 3.1)
     mutex_m (0.3.0)
+    net-http (0.6.0)
+      uri
     net-imap (0.5.8)
       date
       net-protocol
@@ -297,12 +309,24 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     nio4r (2.7.4)
-    nokogiri (1.18.8)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.18.8-x86_64-linux-gnu)
       racc (~> 1.4)
+    oauth2 (2.0.11)
+      faraday (>= 0.17.3, < 4.0)
+      jwt (>= 1.0, < 4.0)
+      logger (~> 1.2)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 4)
+      snaky_hash (~> 2.0, >= 2.0.3)
+      version_gem (>= 1.1.8, < 3)
     omniauth (1.9.2)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
+    omniauth-discord (1.2.0)
+      omniauth-oauth2 (~> 1.6)
+    omniauth-oauth2 (1.7.3)
+      oauth2 (>= 1.4, < 3)
+      omniauth (>= 1.9, < 3)
     omniauth-openid (2.0.1)
       omniauth (>= 1.0, < 3.0)
       rack-openid (~> 1.4.0)
@@ -471,6 +495,9 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
+    snaky_hash (2.0.3)
+      hashie (>= 0.1.0, < 6)
+      version_gem (>= 1.1.8, < 3)
     spring (4.3.0)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
@@ -503,6 +530,8 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
     uniform_notifier (1.16.0)
+    uri (1.0.3)
+    version_gem (1.1.8)
     warden (1.2.9)
       rack (>= 2.0.9)
     webrick (1.9.1)
@@ -518,7 +547,7 @@ GEM
     zeitwerk (2.6.18)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
@@ -553,6 +582,7 @@ DEPENDENCIES
   letter_opener
   mini_magick
   omniauth (~> 1)
+  omniauth-discord
   omniauth-rails_csrf_protection
   omniauth-steam
   pagedown-bootstrap-rails
@@ -579,4 +609,4 @@ DEPENDENCIES
   will_paginate-bootstrap4
 
 BUNDLED WITH
-   2.5.13
+   2.6.8

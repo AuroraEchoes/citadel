@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'features'
 
 describe UsersController do
   describe 'GET #index' do
@@ -114,7 +115,7 @@ describe UsersController do
       expect(user.notice).to eq('')
       expect(user.email).to eq('foo@bar.com')
       expect(user).to_not be_confirmed
-      expect(response).to redirect_to(user_path(user))
+      expect(response).to redirect_to(user_path(user)), type: :request
     end
 
     it 'allows admins to edit users' do
@@ -358,6 +359,52 @@ describe UsersController do
       patch :logout
 
       expect(session['devise']).to be_nil
+    end
+  end
+
+  describe 'PATCH #unlink_discord' do
+    let(:user) { create(:user_with_discord) }
+    before do
+      sign_in user
+    end
+
+    context 'with Discord integration enabled' do
+      before do
+        allow(Features).to receive(:discord_integration_enabled?).and_return(true)
+        Rails.application.reload_routes!
+        sign_in user
+      end
+
+      it 'allows users to unlink a Discord account' do
+        expect(user.discord_id).to_not be_nil
+        patch :unlink_discord, params: { id: user.id }
+        user.reload
+        expect(user.discord_id).to be_nil
+      end
+
+      it 'fails for unauthorized user' do
+        other = create(:user)
+        sign_in other
+        expect(user.discord_id).to_not be_nil
+        patch :unlink_discord, params: { id: user.id }
+        other.reload
+        expect(user.discord_id).to_not be_nil
+        expect(response).to redirect_to(user_path(user))
+      end
+    end
+
+    context 'with Discord integration disabled' do
+      before do
+        allow(Features).to receive(:discord_integration_enabled?).and_return(true)
+        Rails.application.reload_routes!
+      end
+
+      it 'is not routable' do
+        expect(patch: "/users/#{user.id}/unlink_discord").to be_routable
+        allow(Features).to receive(:discord_integration_enabled?).and_return(false)
+        Rails.application.reload_routes!
+        expect(patch: "/users/#{user.id}/unlink_discord").to_not be_routable
+      end
     end
   end
 end

@@ -87,3 +87,6 @@ spec/carrierwave
 /config/master.key
 /config/credentials.yml.enc
 /config/credentials/*
+
+.gitignore
+config/database.yml

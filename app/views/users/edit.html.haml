@@ -15,6 +15,24 @@
 
       = f.primary 'Request Name Change'
 
+- if Features.discord_integration_enabled?
+  .card.mb-3
+    .card-header Connections
+    .card-body
+      = user_p.discord_icon_link
+      %b Discord
+      .d-flex.align-items-center
+        - if @user.discord_id
+          .flex-fill
+            Account Linked
+          = button_to 'Unlink Discord', unlink_discord_user_path(@user), method: :patch, class: 'btn btn-danger',
+            data: { confirm: 'Are you sure you want to unlink your Discord account?' }
+        - else
+          .flex-fill
+            Account Not Linked
+          = link_to 'Link Discord', user_discord_omniauth_authorize_path,
+            method: :post, class: 'btn btn-primary'
+
 .card.mb-3
   .card-header General
   .card-body

@@ -3,4 +3,4 @@ shared:
   discord_integration: true
   name_filtering:
     enabled: false
-    filter: '\A[\p{Alnum}]+\z'
+    filter: '\A[\p{ASCII}]+\z'

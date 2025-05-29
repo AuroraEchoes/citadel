@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'features'
 
 describe User do
   before(:all) { create(:user) }
@@ -172,6 +173,32 @@ describe User do
           end.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
+    end
+  end
+
+  describe 'name filtering feature' do
+    before do
+      allow(Features).to receive(:name_filter).and_return(/\A[\p{Alnum}]+\z/)
+    end
+
+    context 'with name filtering enabled' do
+      before do
+        allow(Features).to receive(:name_filtering_enabled?).and_return(true)
+      end
+
+      it { should allow_value('FOOBAR123').for(:name) }
+      it { should_not allow_value('!@#').for(:name) }
+
+    end
+
+    context 'with name filtering disabled' do
+      before do
+        allow(Features).to receive(:name_filtering_enabled?).and_return(false)
+      end
+
+      it { should allow_value('FOOBAR123').for(:name) }
+      it { should allow_value('!@#').for(:name) }
+
     end
   end
 end

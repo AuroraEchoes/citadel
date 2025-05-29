@@ -41,7 +41,7 @@ class User < ApplicationRecord
   ]
 
   validates :name, presence: true, uniqueness: true, length: { in: 1..64 }
-  validates :name, format: { with: Features.name_filter }, if: Features.name_filtering_enabled?
+  validates :name, format: { with: -> { Features.name_filter } }, if: -> { Features.name_filtering_enabled? }
   validates :steam_id, presence: true, uniqueness: true,
                        numericality: { greater_than: 0 }
   validates :discord_id, allow_nil: true, uniqueness: true, numericality: { greater_than: 0 }

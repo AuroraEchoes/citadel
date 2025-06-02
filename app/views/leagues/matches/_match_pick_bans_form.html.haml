@@ -22,7 +22,7 @@
 
         .pull-right
           = f.submit pick_ban.kind.humanize,
-            data: { confirm: "Are you sure you want to #{pick_ban.kind}?" }
+                     data: { confirm: "Are you sure you want to #{pick_ban.kind}?" }
 
   - next_pick_bans.each do |pick_ban2|
     %li.list-group-item= present(pick_ban2).status
